@@ -1,5 +1,4 @@
 import ImageGalleryItem from 'components/ImageGalleryItem';
-import { Component } from 'react';
 import s from '../ImageGallery/ImageGallery.module.css';
 import { Events, animateScroll as scroll } from 'react-scroll';
 import { useEffect } from 'react';
