@@ -28,7 +28,7 @@ const ImageGallery = ({ imagesObj, onGalleryId }) => {
       return;
     }
     scroll.scrollToBottom();
-  }, [imagesObj.length]);
+  }, [imagesObj.length, firstRender]);
 
   // componentWillUnmount() {
   //   Events.scrollEvent.remove('begin');

@@ -45,6 +45,7 @@ export const App = () => {
           setStatus('resolved');
         })
         .catch(error => {
+          console.error(error);
           setStatus('rejected');
         });
     } else if (page > 1) {
