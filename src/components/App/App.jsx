@@ -23,7 +23,6 @@ export const App = () => {
   const [images, setImages] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [error, setError] = useState(null);
   const [status, setStatus] = useState('idle');
   const [showModal, setShowModal] = useState(false);
   const [modalImageId, setModalImageId] = useState(null);
@@ -32,37 +31,34 @@ export const App = () => {
   useEffect(() => {
     if (!search) {
       return;
-    }
-    setStatus('pending');
-    setPage(1);
-    fetchAPI(search, page, PER_PAGE)
-      .then(images => {
-        if (images.hits.length === 0) {
-          Notify.failure('Oops, not found, try again😢');
-          return setStatus('rejected');
+    } else if (page === 1) {
+      setStatus('pending');
+      setPage(1);
+      fetchAPI(search, page, PER_PAGE)
+        .then(images => {
+          if (images.hits.length === 0) {
+            Notify.failure('Oops, not found, try again😢');
+            return setStatus('rejected');
+          }
+          setImages(images.hits);
+          setShowLoadMore(true);
+          setStatus('resolved');
+        })
+        .catch(error => {
+          setStatus('rejected');
+        });
+    } else if (page > 1) {
+      fetchAPI(search, page, PER_PAGE).then(arr => {
+        const check = arr.totalHits > page * PER_PAGE;
+        if (!check) {
+          setShowLoadMore(false);
         }
-        setImages(images.hits);
-        setShowLoadMore(true);
-        setStatus('resolved');
-      })
-      .catch(error => {
-        setError(error);
-        setStatus('rejected');
+        setImages(prevState => [...prevState, ...arr.hits]);
       });
-  }, [search]);
-
-  useEffect(() => {
-    if (page === 1) {
-      return;
     }
-    fetchAPI(search, page, PER_PAGE).then(arr => {
-      const check = arr.totalHits > page * PER_PAGE;
-      if (!check) {
-        setShowLoadMore(false);
-      }
-      setImages(prevState => [...prevState, ...arr.hits]);
-    });
-  }, [page]);
+  }, [search, page]);
+
+  useEffect(() => {}, [page]);
 
   //Fn Open/Close modalWindow
   const toggleModal = () => {
@@ -72,6 +68,7 @@ export const App = () => {
   // Fn Edit state - search
   const onSubmitSearchBar = name => {
     setSearch(name.toLowerCase());
+    setPage(1);
   };
 
   const modalSetId = id => {
