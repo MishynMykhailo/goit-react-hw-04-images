@@ -5,6 +5,6 @@ export default function fetchAPI(search, page, PER_PAGE) {
     if (response.ok) {
       return response.json();
     }
-    return Promise.reject(new Error(`Not Found ${search}`));
+    throw new Error(`Not Found ${search}`);
   });
 }

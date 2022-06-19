@@ -59,8 +59,6 @@ export const App = () => {
     }
   }, [search, page]);
 
-  useEffect(() => {}, [page]);
-
   //Fn Open/Close modalWindow
   const toggleModal = () => {
     setShowModal(!showModal);
